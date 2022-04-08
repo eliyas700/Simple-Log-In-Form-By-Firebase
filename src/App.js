@@ -1,6 +1,11 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import app from "./firebase.init";
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
@@ -8,6 +13,7 @@ import { Button, Form } from "react-bootstrap";
 function App() {
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
   const [validated, setValidated] = useState(false);
   const [user, setUser] = useState({});
   const handleSubmit = (event) => {
@@ -26,6 +32,17 @@ function App() {
     console.log("workinf");
     const auth = getAuth();
     signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+        setUser(user);
+        console.log(user);
+      })
+      .catch((error) => console.error(error));
+  };
+  //Sign in By Git Hub
+  const handleSignInGitHub = () => {
+    console.log("clicked on Git hub signin");
+    signInWithPopup(auth, githubProvider)
       .then((result) => {
         const user = result.user;
         setUser(user);
@@ -68,7 +85,10 @@ function App() {
         <div>
           <p className="text-muted">Or Sign Up Using</p>
           <div>
-            <button onClick={handleSignInGoogle}>Sign In By Google</button>
+            <button className="mx-4" onClick={handleSignInGoogle}>
+              Sign In By Google
+            </button>
+            <button onClick={handleSignInGitHub}>Git Hub</button>
           </div>
         </div>
       </div>
