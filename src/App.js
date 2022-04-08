@@ -1,6 +1,7 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
+  FacebookAuthProvider,
   getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -14,6 +15,7 @@ function App() {
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
   const [validated, setValidated] = useState(false);
   const [user, setUser] = useState({});
   const handleSubmit = (event) => {
@@ -43,6 +45,17 @@ function App() {
   const handleSignInGitHub = () => {
     console.log("clicked on Git hub signin");
     signInWithPopup(auth, githubProvider)
+      .then((result) => {
+        const user = result.user;
+        setUser(user);
+        console.log(user);
+      })
+      .catch((error) => console.error(error));
+  };
+  // Sign In With Facebook
+  const handleSignInFacebook = () => {
+    console.log("clicked on fb signin");
+    signInWithPopup(auth, facebookProvider)
       .then((result) => {
         const user = result.user;
         setUser(user);
@@ -89,6 +102,7 @@ function App() {
               Sign In By Google
             </button>
             <button onClick={handleSignInGitHub}>Git Hub</button>
+            <button onClick={handleSignInFacebook}>Facebook</button>
           </div>
         </div>
       </div>
