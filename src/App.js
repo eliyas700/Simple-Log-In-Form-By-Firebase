@@ -1,13 +1,15 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import app from "./firebase.init";
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 
 function App() {
   const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
   const [validated, setValidated] = useState(false);
+  const [user, setUser] = useState({});
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -16,6 +18,20 @@ function App() {
     }
 
     setValidated(true);
+  };
+
+  // Sign in By Google
+
+  const handleSignInGoogle = () => {
+    console.log("workinf");
+    const auth = getAuth();
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const user = result.user;
+        setUser(user);
+        console.log(user);
+      })
+      .catch((error) => console.error(error));
   };
   return (
     <div>
@@ -49,6 +65,17 @@ function App() {
             Submit
           </Button>
         </Form>
+        <div>
+          <p className="text-muted">Or Sign Up Using</p>
+          <div>
+            <button onClick={handleSignInGoogle}>Sign In By Google</button>
+          </div>
+        </div>
+      </div>
+      <div className="user-info mx-auto w-50 ">
+        <h2>{user.displayName}</h2>
+        <img src={user.photoURL} alt="" />
+        <p>Email: {user.email}</p>
       </div>
     </div>
   );
